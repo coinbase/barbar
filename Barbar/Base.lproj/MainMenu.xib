@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10117" systemVersion="15G31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10117"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="NSApplication">
+            <connections>
+                <outlet property="delegate" destination="Voe-Tx-rLC" id="GzC-gU-4Uq"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="Barbar" customModuleProvider="target"/>
+        <customObject id="YLy-65-1bz" customClass="NSFontManager"/>
+        <drawer trailingOffset="15" id="ggZ-4H-Jgi">
+            <size key="contentSize" width="100" height="100"/>
+            <size key="maxContentSize" width="10000" height="10000"/>
+        </drawer>
+        <customObject id="gu6-Rc-WLJ" customClass="StatusMenuController" customModule="Barbar" customModuleProvider="target">
+            <connections>
+                <outlet property="firstDetailView" destination="gxq-mc-Gro" id="8uL-E4-3fo"/>
+                <outlet property="secondDetailView" destination="EPG-Oq-fwa" id="OQq-wn-BYF"/>
+                <outlet property="statusMenu" destination="fwK-mj-n3g" id="FLo-Pv-kp3"/>
+            </connections>
+        </customObject>
+        <menu id="fwK-mj-n3g">
+            <items>
+                <menuItem title="FirstPairView" id="de2-8Q-TSa">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                </menuItem>
+                <menuItem isSeparatorItem="YES" id="65B-YB-igF"/>
+                <menuItem title="SecondPairView" id="SSn-u1-qLb">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                </menuItem>
+                <menuItem isSeparatorItem="YES" id="ISV-st-eO4"/>
+                <menuItem title="Preferences" id="fZQ-RE-uUk">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="showPreference:" target="gu6-Rc-WLJ" id="Pjr-AT-Y1X"/>
+                    </connections>
+                </menuItem>
+                <menuItem isSeparatorItem="YES" id="P5C-Is-xr9"/>
+                <menuItem title="Quit" id="o1E-W5-bbb">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="quitClicked:" target="gu6-Rc-WLJ" id="Rom-UC-dre"/>
+                    </connections>
+                </menuItem>
+            </items>
+            <point key="canvasLocation" x="131.5" y="288.5"/>
+        </menu>
+        <customView id="gxq-mc-Gro" userLabel="First Detail View" customClass="DetailView" customModule="Barbar" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="140" height="87"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <subviews>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="fxT-AI-Cfb" userLabel="BTC / USD">
+                    <rect key="frame" x="20" y="63" width="100" height="16"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="BTC / USD" id="Zdz-0p-PjA">
+                        <font key="font" metaFont="cellTitle"/>
+                        <color key="textColor" red="0.60000002379999995" green="0.60000002379999995" blue="0.60000002379999995" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9v5-Cn-PbR">
+                    <rect key="frame" x="20" y="29" width="100" height="29"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="$573.05" id="vSu-Ag-UCf">
+                        <font key="font" metaFont="systemMedium" size="24"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="30U-eP-otF">
+                    <rect key="frame" x="18" y="8" width="104" height="16"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="+$37.15" id="mpm-1I-Egc">
+                        <font key="font" metaFont="cellTitle"/>
+                        <color key="textColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+            </subviews>
+            <constraints>
+                <constraint firstItem="fxT-AI-Cfb" firstAttribute="bottom" secondItem="9v5-Cn-PbR" secondAttribute="top" constant="-5" id="2QA-4L-sMP"/>
+                <constraint firstAttribute="trailing" secondItem="9v5-Cn-PbR" secondAttribute="trailing" constant="22" id="5Pc-TK-MYd"/>
+                <constraint firstItem="9v5-Cn-PbR" firstAttribute="centerY" secondItem="gxq-mc-Gro" secondAttribute="centerY" id="BkL-Fu-aUV"/>
+                <constraint firstItem="30U-eP-otF" firstAttribute="leading" secondItem="gxq-mc-Gro" secondAttribute="leading" constant="20" id="GTg-gz-W4u"/>
+                <constraint firstAttribute="trailing" secondItem="30U-eP-otF" secondAttribute="trailing" constant="20" id="HGO-Cw-Rzn"/>
+                <constraint firstItem="30U-eP-otF" firstAttribute="top" secondItem="9v5-Cn-PbR" secondAttribute="bottom" constant="5" id="HK0-Qz-NCO"/>
+                <constraint firstItem="fxT-AI-Cfb" firstAttribute="leading" secondItem="gxq-mc-Gro" secondAttribute="leading" constant="22" id="I6J-K6-mbN"/>
+                <constraint firstAttribute="trailing" secondItem="fxT-AI-Cfb" secondAttribute="trailing" constant="22" id="LvM-ce-FBF"/>
+                <constraint firstItem="9v5-Cn-PbR" firstAttribute="leading" secondItem="gxq-mc-Gro" secondAttribute="leading" constant="22" id="sOB-a7-WyD"/>
+            </constraints>
+            <connections>
+                <outlet property="currencyPair" destination="fxT-AI-Cfb" id="3eo-EQ-q96"/>
+                <outlet property="currentprice" destination="9v5-Cn-PbR" id="rTO-ID-TbM"/>
+                <outlet property="priceDifference" destination="30U-eP-otF" id="Nfx-CY-qiv"/>
+            </connections>
+            <point key="canvasLocation" x="131" y="458.5"/>
+        </customView>
+        <customView id="EPG-Oq-fwa" userLabel="Second Detail View" customClass="DetailView" customModule="Barbar" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="140" height="87"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <subviews>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Lnv-NK-8LM" userLabel="BTC / USD">
+                    <rect key="frame" x="20" y="63" width="100" height="16"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="BTC / USD" id="tJ2-aB-XSq">
+                        <font key="font" metaFont="cellTitle"/>
+                        <color key="textColor" red="0.60000002379999995" green="0.60000002379999995" blue="0.60000002379999995" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="A2c-1f-59C">
+                    <rect key="frame" x="20" y="29" width="100" height="29"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="$573.05" id="NGE-dO-J3S">
+                        <font key="font" metaFont="systemMedium" size="24"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Nub-ue-q6G">
+                    <rect key="frame" x="18" y="8" width="104" height="16"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="+$37.15" id="Q9F-Fw-QRN">
+                        <font key="font" metaFont="cellTitle"/>
+                        <color key="textColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+            </subviews>
+            <constraints>
+                <constraint firstItem="Lnv-NK-8LM" firstAttribute="leading" secondItem="EPG-Oq-fwa" secondAttribute="leading" constant="22" id="BPe-0t-Jp4"/>
+                <constraint firstItem="Lnv-NK-8LM" firstAttribute="bottom" secondItem="A2c-1f-59C" secondAttribute="top" constant="-5" id="G3v-Yb-tum"/>
+                <constraint firstAttribute="trailing" secondItem="Lnv-NK-8LM" secondAttribute="trailing" constant="22" id="Gzy-Jv-hcj"/>
+                <constraint firstItem="A2c-1f-59C" firstAttribute="centerY" secondItem="EPG-Oq-fwa" secondAttribute="centerY" id="Qaf-YJ-7rV"/>
+                <constraint firstItem="Nub-ue-q6G" firstAttribute="leading" secondItem="EPG-Oq-fwa" secondAttribute="leading" constant="20" id="Qdu-Dc-18W"/>
+                <constraint firstAttribute="trailing" secondItem="Nub-ue-q6G" secondAttribute="trailing" constant="20" id="lMl-LT-7f7"/>
+                <constraint firstItem="A2c-1f-59C" firstAttribute="leading" secondItem="EPG-Oq-fwa" secondAttribute="leading" constant="22" id="nV4-SM-yLi"/>
+                <constraint firstAttribute="trailing" secondItem="A2c-1f-59C" secondAttribute="trailing" constant="22" id="rbD-G2-yIg"/>
+                <constraint firstItem="Nub-ue-q6G" firstAttribute="top" secondItem="A2c-1f-59C" secondAttribute="bottom" constant="5" id="w2r-rg-3RX"/>
+            </constraints>
+            <connections>
+                <outlet property="currencyPair" destination="Lnv-NK-8LM" id="qTz-BR-I1Z"/>
+                <outlet property="currentprice" destination="A2c-1f-59C" id="j0g-He-6MK"/>
+                <outlet property="priceDifference" destination="Nub-ue-q6G" id="mme-Qw-ae2"/>
+            </connections>
+            <point key="canvasLocation" x="131" y="636"/>
+        </customView>
+    </objects>
+</document>
