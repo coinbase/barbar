@@ -11,5 +11,5 @@ OSX crypto-currency price ticker
 ![Preferences](https://github.com/coinbase/barbar/blob/master/pref.png)
 
 
-Download -> https://github.com/coinbase/barbar/blob/master/Barbar.zip
+Download -> https://github.com/coinbase/barbar/raw/master/Barbar.zip
 
