@@ -5,7 +5,9 @@
 OSX crypto-currency price ticker
 
 ![Ticker](https://github.com/coinbase/barbar/blob/master/ticker.png)
+
 ![Detail](https://github.com/coinbase/barbar/blob/master/detail.png)
+
 ![Preferences](https://github.com/coinbase/barbar/blob/master/pref.png)
 
 
