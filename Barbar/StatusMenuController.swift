@@ -23,8 +23,8 @@ class StatusMenuController: NSObject, PreferencesWindowDelegate {
 
     var firstPairViewMenuItem: NSMenuItem!
     var secondPairViewMenuItem: NSMenuItem!
-    var interval:NSTimeInterval!
-    var timer: NSTimer!
+    var interval:TimeInterval!
+    var timer: Timer!
     var firstPrice = ""
     var secondPrice = ""
     var pairs: [Pair] = []
@@ -37,9 +37,9 @@ class StatusMenuController: NSObject, PreferencesWindowDelegate {
     var fontNegative: [String : NSObject]!
     var useColouredSymbols = true
     
-    let statusItem = NSStatusBar.systemStatusBar().statusItemWithLength(NSVariableStatusItemLength)
-    let defaults = NSUserDefaults.standardUserDefaults()
-    let font = [NSFontAttributeName: NSFont.systemFontOfSize(15)]
+    let statusItem = NSStatusBar.system().statusItem(withLength: NSVariableStatusItemLength)
+    let defaults = Foundation.UserDefaults.standard
+    let font = [NSFontAttributeName: NSFont.systemFont(ofSize: 15)]
     let pairsURL = "https://api.gdax.com/products"
     let green = NSColor.init(red: 22/256, green: 206/255, blue: 0/256, alpha: 1)
     let red = NSColor.init(red: 255/256, green: 73/255, blue: 0/256, alpha: 1)
@@ -55,8 +55,8 @@ class StatusMenuController: NSObject, PreferencesWindowDelegate {
         startNotifier()
         
         // After 5 seconds, stop and re-start reachability, this time using a hostname
-        let dispatchTime = dispatch_time(DISPATCH_TIME_NOW, Int64(UInt64(5) * NSEC_PER_SEC))
-        dispatch_after(dispatchTime, dispatch_get_main_queue()) {
+        let dispatchTime = DispatchTime.now() + Double(Int64(UInt64(5) * NSEC_PER_SEC)) / Double(NSEC_PER_SEC)
+        DispatchQueue.main.asyncAfter(deadline: dispatchTime) {
             self.stopNotifier()
             self.setupReachability(useHostName: true)
             self.startNotifier()
@@ -66,45 +66,45 @@ class StatusMenuController: NSObject, PreferencesWindowDelegate {
     //MARK: SETUP
     func setup() {
         
-        fontPosistive = [NSFontAttributeName: NSFont.systemFontOfSize(15), NSForegroundColorAttributeName: green]
-        fontNegative = [NSFontAttributeName: NSFont.systemFontOfSize(15), NSForegroundColorAttributeName: red]
+        fontPosistive = [NSFontAttributeName: NSFont.systemFont(ofSize: 15), NSForegroundColorAttributeName: green]
+        fontNegative = [NSFontAttributeName: NSFont.systemFont(ofSize: 15), NSForegroundColorAttributeName: red]
         
-        if let interval = defaults.objectForKey(UserDefaults.interval.rawValue) as? NSTimeInterval {
+        if let interval = defaults.object(forKey: UserDefaults.interval.rawValue) as? TimeInterval {
             self.interval = interval
         } else {
-            self.interval = NSTimeInterval(60)  // Default is 60 seconds
-            defaults.setObject(self.interval, forKey: UserDefaults.interval.rawValue)
+            self.interval = TimeInterval(60)  // Default is 60 seconds
+            defaults.set(self.interval, forKey: UserDefaults.interval.rawValue)
         }
         
-        if let firstPair = defaults.objectForKey(UserDefaults.firstPair.rawValue) as? String {
+        if let firstPair = defaults.object(forKey: UserDefaults.firstPair.rawValue) as? String {
             firstPairID = firstPair
         } else {
             firstPairID = URL.btcUSD // Default
-            defaults.setObject(firstPairID, forKey: UserDefaults.firstPair.rawValue)
+            defaults.set(firstPairID, forKey: UserDefaults.firstPair.rawValue)
         }
         
-        if let secondPair = defaults.objectForKey(UserDefaults.secondPair.rawValue) as? String {
+        if let secondPair = defaults.object(forKey: UserDefaults.secondPair.rawValue) as? String {
             secondPairID = secondPair
         } else {
             secondPairID = URL.ethUSD // Default
-            defaults.setObject(secondPairID, forKey: UserDefaults.secondPair.rawValue)
+            defaults.set(secondPairID, forKey: UserDefaults.secondPair.rawValue)
         }
         
         var startAtLogin = false
-        if defaults.objectForKey(UserDefaults.launchFromStart.rawValue) == nil {
+        if defaults.object(forKey: UserDefaults.launchFromStart.rawValue) == nil {
             startAtLogin = true // Default
-            defaults.setBool(true, forKey: UserDefaults.launchFromStart.rawValue)
+            defaults.set(true, forKey: UserDefaults.launchFromStart.rawValue)
         } else {
-            startAtLogin = defaults.boolForKey(UserDefaults.launchFromStart.rawValue)
+            startAtLogin = defaults.bool(forKey: UserDefaults.launchFromStart.rawValue)
         }
         
         toggleStartAtLogin(startAtLogin)
         
-        if defaults.objectForKey(UserDefaults.colorSymbols.rawValue) == nil {
+        if defaults.object(forKey: UserDefaults.colorSymbols.rawValue) == nil {
             useColouredSymbols = true // Default
-            defaults.setBool(true, forKey: UserDefaults.colorSymbols.rawValue)
+            defaults.set(true, forKey: UserDefaults.colorSymbols.rawValue)
         } else {
-            useColouredSymbols = defaults.boolForKey(UserDefaults.colorSymbols.rawValue)
+            useColouredSymbols = defaults.bool(forKey: UserDefaults.colorSymbols.rawValue)
         }
 
         defaults.synchronize()
@@ -114,10 +114,10 @@ class StatusMenuController: NSObject, PreferencesWindowDelegate {
         statusItem.menu = statusMenu
         showStatusItemImage(true)
         
-        firstPairViewMenuItem = statusMenu.itemWithTitle("FirstPairView")
+        firstPairViewMenuItem = statusMenu.item(withTitle: "FirstPairView")
         firstPairViewMenuItem.view = firstDetailView
         
-        secondPairViewMenuItem = statusMenu.itemWithTitle("SecondPairView")
+        secondPairViewMenuItem = statusMenu.item(withTitle: "SecondPairView")
         secondPairViewMenuItem.view = secondDetailView
         
         preferencesWindow = PreferencesWindow()
@@ -126,20 +126,20 @@ class StatusMenuController: NSObject, PreferencesWindowDelegate {
     
     func updateTimer() {
         if timer != nil {
-            if timer.valid == true {
+            if timer.isValid == true {
                 timer.invalidate()
             }
         }
         
-        timer = NSTimer(timeInterval: interval, target: self, selector: #selector(update), userInfo: nil, repeats: true)
-        NSRunLoop.mainRunLoop().addTimer(timer, forMode: NSRunLoopCommonModes)
+        timer = Timer(timeInterval: interval, target: self, selector: #selector(update), userInfo: nil, repeats: true)
+        RunLoop.main.add(timer, forMode: RunLoopMode.commonModes)
     }
     
     func update() {
         fetchPairsPrice()
     }
     
-    func showStatusItemImage(show: Bool) {
+    func showStatusItemImage(_ show: Bool) {
         if show == true {
             statusItem.image = NSImage(named: "iconTemplate") // Just show while loading
         } else {
@@ -148,7 +148,7 @@ class StatusMenuController: NSObject, PreferencesWindowDelegate {
     }
     
     func updateOfflineTitle() {
-        dispatch_async(dispatch_get_main_queue(), {
+        DispatchQueue.main.async(execute: {
             self.firstDetailView.updateOffline()
             self.secondDetailView.updateOffline()
         })
@@ -158,7 +158,7 @@ class StatusMenuController: NSObject, PreferencesWindowDelegate {
         if (chosenPairs.count == 1 && chosenPairs[0].price != nil) ||
             (chosenPairs.count == 2 && chosenPairs[0].price != nil && chosenPairs[1].price != nil) {
             
-            dispatch_async(dispatch_get_main_queue(), {
+            DispatchQueue.main.async(execute: {
                 
                 let firstPair = self.chosenPairs[0]
                 let secondPair = self.chosenPairs[1]
@@ -167,8 +167,8 @@ class StatusMenuController: NSObject, PreferencesWindowDelegate {
                 var secondSymbol: String!
                 
                 if let first = self.chosenPairs[0].price,
-                    quote = self.chosenPairs[0].quoteCurrency,
-                    base = self.chosenPairs[0].baseCurrency {
+                    let quote = self.chosenPairs[0].quoteCurrency,
+                    let base = self.chosenPairs[0].baseCurrency {
                     self.firstPrice = CurrencyFormatter.sharedInstance.formatAmountString(first, currency: quote, options: nil)
                     
                     if base == "BTC" {
@@ -179,8 +179,8 @@ class StatusMenuController: NSObject, PreferencesWindowDelegate {
                 }
                 
                 if let second = self.chosenPairs[1].price,
-                    quote = self.chosenPairs[1].quoteCurrency,
-                    base = self.chosenPairs[1].baseCurrency {
+                    let quote = self.chosenPairs[1].quoteCurrency,
+                    let base = self.chosenPairs[1].baseCurrency {
                     self.secondPrice = CurrencyFormatter.sharedInstance.formatAmountString(second, currency: quote, options: nil)
                     
                     if base == "BTC" {
@@ -212,11 +212,11 @@ class StatusMenuController: NSObject, PreferencesWindowDelegate {
                 let secondSymbolAtt =  NSAttributedString(string:secondSymbol, attributes: self.useColouredSymbols ? secondFont: self.font)
                 let secondPriceAtt = NSAttributedString(string:self.secondPrice, attributes: self.font)
 
-                mutableAttributedString.appendAttributedString(firstSymbolAtt)
-                mutableAttributedString.appendAttributedString(firstPriceAtt)
-                mutableAttributedString.appendAttributedString(NSAttributedString(string:" "))
-                mutableAttributedString.appendAttributedString(secondSymbolAtt)
-                mutableAttributedString.appendAttributedString(secondPriceAtt)
+                mutableAttributedString.append(firstSymbolAtt)
+                mutableAttributedString.append(firstPriceAtt)
+                mutableAttributedString.append(NSAttributedString(string:" "))
+                mutableAttributedString.append(secondSymbolAtt)
+                mutableAttributedString.append(secondPriceAtt)
                 
                 self.statusItem.attributedTitle = mutableAttributedString
                 self.firstDetailView.update(firstPair, price: self.firstPrice, pairID: self.firstPairID)
@@ -243,22 +243,22 @@ class StatusMenuController: NSObject, PreferencesWindowDelegate {
         }
     }
     
-    func fetchPrice(pricePair:String, callback: (String?) -> Void) {
-        let request = NSMutableURLRequest(URL: NSURL(string: "\(pairsURL)/\(pricePair)/ticker")!)
+    func fetchPrice(_ pricePair:String, callback: @escaping (String?) -> Void) {
+        let request = URLRequest(url: Foundation.URL(string: "\(pairsURL)/\(pricePair)/ticker")!)
         Client.shared.getPrice(request) { (price) in
             callback(price)
         }
     }
     
-    func fetchStats(pricePair:String, callback: (String?, String?) -> Void) {
-        let request = NSMutableURLRequest(URL: NSURL(string: "\(pairsURL)/\(pricePair)/stats")!)
+    func fetchStats(_ pricePair:String, callback: @escaping (String?, String?) -> Void) {
+        let request = URLRequest(url: Foundation.URL(string: "\(pairsURL)/\(pricePair)/stats")!)
         Client.shared.getStats(request) { (open, volume) in
             callback(open, volume)
         }
     }
 
     func fetchPairs() {
-        let request = NSMutableURLRequest(URL: NSURL(string: pairsURL)!)
+        let request = URLRequest(url: Foundation.URL(string: pairsURL)!)
         
         chosenPairs.removeAll()
         
@@ -287,16 +287,16 @@ class StatusMenuController: NSObject, PreferencesWindowDelegate {
         }
     }
     
-    @IBAction func quitClicked(sender: NSMenuItem) {
-        NSApplication.sharedApplication().terminate(self)
+    @IBAction func quitClicked(_ sender: NSMenuItem) {
+        NSApplication.shared().terminate(self)
     }
     
-    func showPreference(sender: NSMenuItem) {
+    func showPreference(_ sender: NSMenuItem) {
         preferencesWindow.showWindow(nil)
     }
     
     func quit() {
-        NSApp.performSelector(#selector(NSApp.terminate(_:)))
+        NSApp.perform(#selector(NSApp.terminate(_:)))
     }
     
     //MARK: PreferencesWindowDelegate
@@ -304,26 +304,26 @@ class StatusMenuController: NSObject, PreferencesWindowDelegate {
         update()
     }
     
-    func updateColourSymbols(on: Bool) {
+    func updateColourSymbols(_ on: Bool) {
         useColouredSymbols = on
         updateTitle()
     }
     
-    func updateInterval(interval: NSTimeInterval) {
+    func updateInterval(_ interval: TimeInterval) {
         self.interval = interval
         
-        defaults.setObject(self.interval, forKey: UserDefaults.interval.rawValue)
+        defaults.set(self.interval, forKey: UserDefaults.interval.rawValue)
         defaults.synchronize()
     
         updateTimer()
     }
     
-    func updatePair(isFirstPair:Bool, title: String) {
+    func updatePair(_ isFirstPair:Bool, title: String) {
         if isFirstPair == true {
-            defaults.setObject(title, forKey: UserDefaults.firstPair.rawValue)
+            defaults.set(title, forKey: UserDefaults.firstPair.rawValue)
             firstPairID = title
         } else {
-            defaults.setObject(title, forKey: UserDefaults.secondPair.rawValue)
+            defaults.set(title, forKey: UserDefaults.secondPair.rawValue)
             secondPairID = title
         }
         
@@ -332,38 +332,36 @@ class StatusMenuController: NSObject, PreferencesWindowDelegate {
     }
     
     //MARK: START AT LOGIN
-    func toggleStartAtLogin(start:Bool) {
+    func toggleStartAtLogin(_ start:Bool) {
         let launcherAppIdentifier = "com.coinbase.bar.Barbar"
         
-        SMLoginItemSetEnabled(launcherAppIdentifier, start)
+        SMLoginItemSetEnabled(launcherAppIdentifier as CFString, start)
         
         var startedAtLogin = false
-        for app in NSWorkspace.sharedWorkspace().runningApplications {
+        for app in NSWorkspace.shared().runningApplications {
             if app.bundleIdentifier == launcherAppIdentifier {
                 startedAtLogin = true
             }
         }
         
         if startedAtLogin == true {
-            NSDistributedNotificationCenter.defaultCenter().postNotificationName("killme", object: NSBundle.mainBundle().bundleIdentifier!)
+			
+			DistributedNotificationCenter.default().postNotificationName(NSNotification.Name(rawValue: "killme"),
+			                                                             object: Bundle.main.bundleIdentifier!,
+			                                                             userInfo: nil,
+			                                                             deliverImmediately: true)
         }
         
-        defaults.setBool(start, forKey: UserDefaults.launchFromStart.rawValue)
+        defaults.set(start, forKey: UserDefaults.launchFromStart.rawValue)
         defaults.synchronize()
     }
     
     //MARK: Reachability
-    func setupReachability(useHostName useHostName: Bool) {
+    func setupReachability(useHostName: Bool) {
         let hostName = "gdax.com"
-        
-        do {
-            let reachability = try useHostName ? Reachability(hostname: hostName) : Reachability.reachabilityForInternetConnection()
-            self.reachability = reachability
-        } catch ReachabilityError.FailedToCreateWithAddress(let address) {
-            print("Unable to create Reachability with address \(address)")
-            return
-        } catch {}
-        
+		
+		self.reachability = useHostName ? Reachability(hostname: hostName) : Reachability()
+		
         reachability?.whenReachable = { reachability in
             self.showStatusItemImage(false)
             self.fetchPairs()

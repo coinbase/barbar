@@ -18,7 +18,7 @@ class DetailView: NSView {
     let green = NSColor.init(red: 22/256, green: 206/255, blue: 0/256, alpha: 1)
     let red = NSColor.init(red: 255/256, green: 73/255, blue: 0/256, alpha: 1)
     
-    var pairID: String!
+    var pairID: String?
     
     override init(frame: NSRect) {
         super.init(frame: frame)
@@ -28,20 +28,22 @@ class DetailView: NSView {
         super.init(coder: coder);
     }
     
-    func update(pair: Pair?, price: String?, pairID: String?) {
+    func update(_ pair: Pair?, price: String?, pairID: String?) {
         
-        dispatch_async(dispatch_get_main_queue()) {
-            
-            self.pairID = pairID
-
+        DispatchQueue.main.async {
+			
+			if let pairID = pairID {
+				self.pairID = pairID
+			}
+			
             if let price = price  {
                 self.currentprice.stringValue = "\(price)"
             } else {
                 self.currentprice.stringValue = ""
                 self.priceDifference.stringValue = ""
             }
-            
-            guard let pair = pair else {
+					
+	        guard let pair = pair else {
                 self.currencyPair.stringValue = "Loading..."
                 return
             }
@@ -54,10 +56,10 @@ class DetailView: NSView {
                 return
             }
 
-            let percentString = "\(CurrencyFormatter.sharedInstance.percentFormatter.stringFromNumber(pair.percent())!)%"
+			let percentString = "\(CurrencyFormatter.sharedInstance.percentFormatter.string(from: NSNumber(value: pair.percent()))!)%"
             
             let diffString = "\(pair.difference())"
-            
+			
             let options = CurrencyFormatterOptions()
             options.showPositivePrefix = true
             options.showNegativePrefix = true
@@ -73,7 +75,7 @@ class DetailView: NSView {
     }
     
     func updateOffline() {
-        dispatch_async(dispatch_get_main_queue()) {
+        DispatchQueue.main.async {
             
             self.priceDifference.stringValue = "No Internet!"
             self.priceDifference.textColor = self.red
@@ -83,17 +85,24 @@ class DetailView: NSView {
         }
     }
     
-    override func mouseUp(theEvent: NSEvent) {
-        if let sitePicker = NSUserDefaults.standardUserDefaults().objectForKey("site") as? String {
+    override func mouseUp(with theEvent: NSEvent) {
+        if let sitePicker = Foundation.UserDefaults.standard.object(forKey: "site") as? String {
             if sitePicker == "Coinbase" {
-                NSWorkspace.sharedWorkspace().openURL(NSURL(string: "https://www.coinbase.com/trade")!)
+                NSWorkspace.shared().open(URL(string: "https://www.coinbase.com/trade")!)
                 return
             }
         }
-        NSWorkspace.sharedWorkspace().openURL(NSURL(string: "http://www.gdax.com/trade/\(pairID)")!)
+		
+		guard let pairID = pairID else {
+			NSWorkspace.shared().open(URL(string: "http://www.gdax.com/trade")!)
+			return
+		}
+		
+		NSWorkspace.shared().open(URL(string: "http://www.gdax.com/trade/\(pairID)")!)
+		
     }
     
-    override func acceptsFirstMouse(theEvent: NSEvent?) -> Bool {
+    override func acceptsFirstMouse(for theEvent: NSEvent?) -> Bool {
         return true
     }
 }

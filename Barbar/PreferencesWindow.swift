@@ -9,16 +9,16 @@
 import Cocoa
 
 protocol PreferencesWindowDelegate {
-    func updateInterval(interval: NSTimeInterval)
-    func updatePair(isFirstPair:Bool, title: String)
+    func updateInterval(_ interval: TimeInterval)
+    func updatePair(_ isFirstPair:Bool, title: String)
     func preferencesDidUpdate()
-    func toggleStartAtLogin(start:Bool)
-    func updateColourSymbols(on:Bool)
+    func toggleStartAtLogin(_ start:Bool)
+    func updateColourSymbols(_ on:Bool)
 }
 
 struct Interval {
     var title: String!
-    var interval: NSTimeInterval
+    var interval: TimeInterval
 }
 
 struct Site {
@@ -44,7 +44,7 @@ class PreferencesWindow: NSWindowController, NSWindowDelegate, NSMenuDelegate {
     @IBOutlet weak var startAtLaunch: NSButton!
     @IBOutlet weak var sitePicker: NSPopUpButton!
     
-    @IBAction func startAtLoginPressed(sender: NSButton) {
+    @IBAction func startAtLoginPressed(_ sender: NSButton) {
         var isOn:Bool = false
         if sender.state == NSOffState {
             isOn = false
@@ -54,30 +54,30 @@ class PreferencesWindow: NSWindowController, NSWindowDelegate, NSMenuDelegate {
         self.delegate!.toggleStartAtLogin(isOn)
     }
     
-    @IBAction func secondPairUpdated(sender: NSPopUpButton) {
+    @IBAction func secondPairUpdated(_ sender: NSPopUpButton) {
         self.delegate!.updatePair(false, title:sender.titleOfSelectedItem!)
     }
     
-    @IBAction func firstPairUpdated(sender: NSPopUpButton) {
+    @IBAction func firstPairUpdated(_ sender: NSPopUpButton) {
         self.delegate!.updatePair(true, title:sender.titleOfSelectedItem!)
     }
     
-    @IBAction func intervalUpdated(sender: NSPopUpButton) {
-        let index = updateInterval.indexOfItemWithTitle(sender.titleOfSelectedItem!)
+    @IBAction func intervalUpdated(_ sender: NSPopUpButton) {
+        let index = updateInterval.indexOfItem(withTitle: sender.titleOfSelectedItem!)
         let interval = intervals[index]
         
         self.delegate!.updateInterval(interval.interval)
     }
     
-    @IBAction func sitePickerUpdated(sender: NSPopUpButton) {
-        let index = sitePicker.indexOfItemWithTitle(sender.titleOfSelectedItem!)
+    @IBAction func sitePickerUpdated(_ sender: NSPopUpButton) {
+        let index = sitePicker.indexOfItem(withTitle: sender.titleOfSelectedItem!)
         let site = sites[index]
         
-        defaults.setObject(site.title, forKey: siteUserDefault)
+        defaults.set(site.title, forKey: siteUserDefault)
         defaults.synchronize()
     }
     
-    @IBAction func colourSymbolsUpdated(sender: NSButton) {
+    @IBAction func colourSymbolsUpdated(_ sender: NSButton) {
         var isOn:Bool = false
         if sender.state == NSOffState {
             isOn = false
@@ -85,7 +85,7 @@ class PreferencesWindow: NSWindowController, NSWindowDelegate, NSMenuDelegate {
             isOn = true
         }
         
-        defaults.setBool(isOn, forKey: UserDefaults.colorSymbols.rawValue)
+        defaults.set(isOn, forKey: UserDefaults.colorSymbols.rawValue)
         defaults.synchronize()
 
         delegate!.updateColourSymbols(isOn)
@@ -101,7 +101,7 @@ class PreferencesWindow: NSWindowController, NSWindowDelegate, NSMenuDelegate {
         }
     }
     
-    let defaults = NSUserDefaults.standardUserDefaults()
+    let defaults = Foundation.UserDefaults.standard
     
     let intervals = [Interval(title:"5 Seconds", interval: 5),
                     Interval(title:"60 Seconds", interval: 60),
@@ -121,24 +121,24 @@ class PreferencesWindow: NSWindowController, NSWindowDelegate, NSMenuDelegate {
 
         window?.center()
         window?.makeKeyAndOrderFront(nil)
-        window?.level = Int(CGWindowLevelForKey(.MaximumWindowLevelKey))
-        NSApp.activateIgnoringOtherApps(true)
+        window?.level = Int(CGWindowLevelForKey(.maximumWindow))
+        NSApp.activate(ignoringOtherApps: true)
     }
     
     override func awakeFromNib() {
         
-        let savedInterval = defaults.objectForKey(UserDefaults.interval.rawValue) as! NSTimeInterval
-        let savedFirstPair = defaults.objectForKey(UserDefaults.firstPair.rawValue) as! String
-        let savedSecondPair = defaults.objectForKey(UserDefaults.secondPair.rawValue) as! String
-        let savedLaunchFromStart = defaults.boolForKey(UserDefaults.launchFromStart.rawValue)
-        let savedColourSymbols = defaults.boolForKey(UserDefaults.colorSymbols.rawValue)
+        let savedInterval = defaults.object(forKey: UserDefaults.interval.rawValue) as! TimeInterval
+        let savedFirstPair = defaults.object(forKey: UserDefaults.firstPair.rawValue) as! String
+        let savedSecondPair = defaults.object(forKey: UserDefaults.secondPair.rawValue) as! String
+        let savedLaunchFromStart = defaults.bool(forKey: UserDefaults.launchFromStart.rawValue)
+        let savedColourSymbols = defaults.bool(forKey: UserDefaults.colorSymbols.rawValue)
         let savedSitePicker: String!
         
-        if let sitePicker = defaults.objectForKey(siteUserDefault) as? String {
+        if let sitePicker = defaults.object(forKey: siteUserDefault) as? String {
             savedSitePicker = sitePicker
         } else {
             savedSitePicker = sites[0].title
-            defaults.setObject(savedSitePicker, forKey: siteUserDefault)
+            defaults.set(savedSitePicker, forKey: siteUserDefault)
         }
         
         // Intervals
@@ -147,20 +147,20 @@ class PreferencesWindow: NSWindowController, NSWindowDelegate, NSMenuDelegate {
             if interval.interval == savedInterval {
                 selectedInterval = interval
             }
-            updateInterval.addItemWithTitle(interval.title)
+            updateInterval.addItem(withTitle: interval.title)
         }
-        updateInterval.selectItemWithTitle(selectedInterval.title)
+        updateInterval.selectItem(withTitle: selectedInterval.title)
         
         // Pairs
         for pair in pairs {
             if let displayName = pair.id! as String? {
-                firstPair.addItemWithTitle(displayName)
-                secondPair.addItemWithTitle(displayName)
+                firstPair.addItem(withTitle: displayName)
+                secondPair.addItem(withTitle: displayName)
             }
         }
         
-        firstPair.selectItemWithTitle(savedFirstPair)
-        secondPair.selectItemWithTitle(savedSecondPair)
+        firstPair.selectItem(withTitle: savedFirstPair)
+        secondPair.selectItem(withTitle: savedSecondPair)
 
         // Example
         if exampleString != nil {
@@ -168,10 +168,10 @@ class PreferencesWindow: NSWindowController, NSWindowDelegate, NSMenuDelegate {
         }
         
         // Start are launch
-        startAtLaunch.state = Int(savedLaunchFromStart)
+        startAtLaunch.state = savedLaunchFromStart ? 1 : 0
         
         // Colour symbols
-        colorSymbols.state = Int(savedColourSymbols)
+        colorSymbols.state = savedColourSymbols ? 1 : 0
         
         // Site picker
         
@@ -180,16 +180,16 @@ class PreferencesWindow: NSWindowController, NSWindowDelegate, NSMenuDelegate {
             if site.title == savedSitePicker {
                 selectedSite = site
             }
-            sitePicker.addItemWithTitle(site.title)
+            sitePicker.addItem(withTitle: site.title)
         }
-        sitePicker.selectItemWithTitle(selectedSite.title)
+        sitePicker.selectItem(withTitle: selectedSite.title)
     }
     
     override var windowNibName : String! {
         return "PreferencesWindow"
     }
     
-    func windowWillClose(notification: NSNotification) {
+    func windowWillClose(_ notification: Notification) {
         delegate?.preferencesDidUpdate()
     }
 }

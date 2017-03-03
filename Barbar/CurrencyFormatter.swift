@@ -12,7 +12,7 @@ class CurrencyFormatterOptions: NSObject {
     var addCurrencySymbol = true
     var showPositivePrefix = false
     var showNegativePrefix = true
-    var locale: NSLocale? = nil
+    var locale: Locale? = nil
     var allowTruncation = false
 }
 
@@ -20,10 +20,10 @@ class CurrencyFormatter: NSObject {
     
     static let sharedInstance = CurrencyFormatter()
     
-    let formatter = NSNumberFormatter()
-    let stringFromNumberFormatter = NSNumberFormatter()
-    let truncatingFormatter = NSNumberFormatter()
-    let percentFormatter = NSNumberFormatter()
+    let formatter = NumberFormatter()
+    let stringFromNumberFormatter = NumberFormatter()
+    let truncatingFormatter = NumberFormatter()
+    let percentFormatter = NumberFormatter()
     
     let currencies = [
         "USD": "$",
@@ -52,7 +52,7 @@ class CurrencyFormatter: NSObject {
         truncatingFormatter.locale = nil
         truncatingFormatter.minimumIntegerDigits = 1
 
-        stringFromNumberFormatter.locale = NSLocale(localeIdentifier: "en_US")
+        stringFromNumberFormatter.locale = Locale(identifier: "en_US")
         stringFromNumberFormatter.minimumIntegerDigits = 1
         stringFromNumberFormatter.maximumFractionDigits = 8
         
@@ -60,15 +60,15 @@ class CurrencyFormatter: NSObject {
         percentFormatter.maximumFractionDigits = 2
     }
     
-    func stringFromNumber(amount: Double) -> String {
-        return stringFromNumberFormatter.stringFromNumber(amount)!
+    func stringFromNumber(_ amount: Double) -> String {
+        return stringFromNumberFormatter.string(from: NSNumber(value: amount))!
     }
     
-    func formatAmountString(amount: String, currency: String, options: CurrencyFormatterOptions?) -> String {
+    func formatAmountString(_ amount: String, currency: String, options: CurrencyFormatterOptions?) -> String {
         return formatAmount((amount as NSString).doubleValue, currency: currency, options: options)
     }
     
-    func formatAmount(amount: Double, currency: String, options: CurrencyFormatterOptions?) -> String {
+    func formatAmount(_ amount: Double, currency: String, options: CurrencyFormatterOptions?) -> String {
         
         var formatOptions = CurrencyFormatterOptions()
         
@@ -83,7 +83,7 @@ class CurrencyFormatter: NSObject {
             formatter.locale = locale
             formatter.usesGroupingSeparator = true
         } else {
-            formatter.locale = NSLocale(localeIdentifier: "en_US")
+            formatter.locale = Locale(identifier: "en_US")
         }
         
         formatter.minimumIntegerDigits = 1
@@ -97,13 +97,13 @@ class CurrencyFormatter: NSObject {
         return formatSymbolAndPrefix(amount, currency: currency, numFormatter: formatter, options: formatOptions)
     }
     
-    private func formatTruncating(amount: Double, currency: String, options: CurrencyFormatterOptions) -> String {
+    fileprivate func formatTruncating(_ amount: Double, currency: String, options: CurrencyFormatterOptions) -> String {
         
         formatter.currencySymbol = ""
         
-        let tempOutput = formatter.stringFromNumber(amount)!
-        let dotIndex = tempOutput.rangeOfString(".")?.startIndex
-        let currentNumberOfFractionDigits = dotIndex == nil ? 0 : (tempOutput.substringFromIndex(dotIndex!).characters.count - 1)
+        let tempOutput = formatter.string(from: NSNumber(value: amount))!
+        let dotIndex = tempOutput.range(of: ".")?.lowerBound
+        let currentNumberOfFractionDigits = dotIndex == nil ? 0 : (tempOutput.substring(from: dotIndex!).characters.count - 1)
         
         if options.allowTruncation && (currentNumberOfFractionDigits > 2) {
             return formatSymbolAndPrefix(amount, currency: currency, numFormatter: truncatingFormatter, options: options)
@@ -112,45 +112,45 @@ class CurrencyFormatter: NSObject {
         return formatSymbolAndPrefix(amount, currency: currency, numFormatter: formatter, options: options)
     }
     
-    private func formatSymbolAndPrefix(amount: Double, currency: String, numFormatter: NSNumberFormatter, options: CurrencyFormatterOptions) -> String {
+    fileprivate func formatSymbolAndPrefix(_ amount: Double, currency: String, numFormatter: NumberFormatter, options: CurrencyFormatterOptions) -> String {
         var output = ""
         output = formatSymbol(amount, currency: currency, numFormatter: numFormatter, options: options)
         output = formatPrefix(amount, output: output, options: options)
         return output
     }
     
-    private func formatSymbol(amount: Double, currency: String, numFormatter: NSNumberFormatter, options: CurrencyFormatterOptions) -> String {
+    fileprivate func formatSymbol(_ amount: Double, currency: String, numFormatter: NumberFormatter, options: CurrencyFormatterOptions) -> String {
         var output = ""
         if options.addCurrencySymbol {
             if let currencyCode = currencies[currency] {
-                numFormatter.numberStyle = NSNumberFormatterStyle.CurrencyStyle
+                numFormatter.numberStyle = NumberFormatter.Style.currency
                 numFormatter.currencySymbol = currencyCode
-                output = numFormatter.stringFromNumber(amount)!
+                output = numFormatter.string(from: NSNumber(value: amount))!
             } else {
                 if currency.characters.count > 0 {
-                    numFormatter.numberStyle = NSNumberFormatterStyle.DecimalStyle
-                    output = "\(numFormatter.stringFromNumber(amount)!) \(currency)"
+                    numFormatter.numberStyle = NumberFormatter.Style.decimal
+                    output = "\(numFormatter.string(from: NSNumber(value: amount))!) \(currency)"
                 } else {
-                    numFormatter.numberStyle = NSNumberFormatterStyle.DecimalStyle
-                    output = "\(numFormatter.stringFromNumber(amount)!)"
+                    numFormatter.numberStyle = NumberFormatter.Style.decimal
+                    output = "\(numFormatter.string(from: NSNumber(value: amount))!)"
                 }
             }
         } else {
-            numFormatter.numberStyle = NSNumberFormatterStyle.DecimalStyle
-            output = numFormatter.stringFromNumber(amount)!
+            numFormatter.numberStyle = NumberFormatter.Style.decimal
+            output = numFormatter.string(from: NSNumber(value: amount))!
         }
         return output
     }
     
-    private func formatPrefix(amount: Double, output: String, options: CurrencyFormatterOptions) -> String {
+    fileprivate func formatPrefix(_ amount: Double, output: String, options: CurrencyFormatterOptions) -> String {
         var formattedOutput = output
         if options.showPositivePrefix && amount > 0 {
-            formattedOutput = "\(formatter.plusSign)\(formattedOutput)"
+            formattedOutput = "\(formatter.plusSign!)\(formattedOutput)"
         }
         if options.showNegativePrefix == false && amount < 0 {
             // Setting formatter.negativePrefix messes up currency symbols so just chop off first character
             formattedOutput = formattedOutput
-                .substringFromIndex(formattedOutput.startIndex.advancedBy(1))
+                .substring(from: formattedOutput.characters.index(formattedOutput.startIndex, offsetBy: 1))
         }
         return formattedOutput
     }
