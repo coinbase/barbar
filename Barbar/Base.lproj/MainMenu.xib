@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11762" systemVersion="16C67" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="12121" systemVersion="16G29" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11762"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="12121"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
         <capability name="system font weights other than Regular or Bold" minToolsVersion="7.0"/>
     </dependencies>
@@ -25,6 +25,7 @@
                 <outlet property="firstDetailView" destination="gxq-mc-Gro" id="8uL-E4-3fo"/>
                 <outlet property="secondDetailView" destination="EPG-Oq-fwa" id="OQq-wn-BYF"/>
                 <outlet property="statusMenu" destination="fwK-mj-n3g" id="FLo-Pv-kp3"/>
+                <outlet property="thirdDetailView" destination="kms-t1-LDh" id="TTX-jX-iNA"/>
             </connections>
         </customObject>
         <menu id="fwK-mj-n3g">
@@ -34,6 +35,10 @@
                 </menuItem>
                 <menuItem isSeparatorItem="YES" id="65B-YB-igF"/>
                 <menuItem title="SecondPairView" id="SSn-u1-qLb">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                </menuItem>
+                <menuItem isSeparatorItem="YES" id="Dt0-SX-FVI"/>
+                <menuItem title="ThirdPairView" id="CZz-cS-TrF">
                     <modifierMask key="keyEquivalentModifierMask"/>
                 </menuItem>
                 <menuItem isSeparatorItem="YES" id="ISV-st-eO4"/>
@@ -57,7 +62,7 @@
             <rect key="frame" x="0.0" y="0.0" width="143" height="87"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
-                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="fxT-AI-Cfb" userLabel="BTC / USD">
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fxT-AI-Cfb" userLabel="BTC / USD">
                     <rect key="frame" x="20" y="63" width="103" height="16"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="BTC / USD" id="Zdz-0p-PjA">
                         <font key="font" metaFont="cellTitle"/>
@@ -65,7 +70,7 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9v5-Cn-PbR">
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9v5-Cn-PbR">
                     <rect key="frame" x="20" y="29" width="120" height="29"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="$573.05" usesSingleLineMode="YES" id="vSu-Ag-UCf">
                         <font key="font" metaFont="systemMedium" size="24"/>
@@ -73,7 +78,7 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="30U-eP-otF">
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="30U-eP-otF">
                     <rect key="frame" x="18" y="8" width="107" height="16"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="+$37.15" id="mpm-1I-Egc">
                         <font key="font" metaFont="cellTitle"/>
@@ -104,7 +109,7 @@
             <rect key="frame" x="0.0" y="0.0" width="140" height="87"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
-                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Lnv-NK-8LM" userLabel="BTC / USD">
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Lnv-NK-8LM" userLabel="BTC / USD">
                     <rect key="frame" x="20" y="63" width="100" height="16"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="BTC / USD" id="tJ2-aB-XSq">
                         <font key="font" metaFont="cellTitle"/>
@@ -112,7 +117,7 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="A2c-1f-59C">
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="A2c-1f-59C">
                     <rect key="frame" x="20" y="29" width="117" height="29"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="$573.05" id="NGE-dO-J3S">
                         <font key="font" metaFont="systemMedium" size="24"/>
@@ -120,7 +125,7 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Nub-ue-q6G">
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Nub-ue-q6G">
                     <rect key="frame" x="18" y="8" width="104" height="16"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="+$37.15" id="Q9F-Fw-QRN">
                         <font key="font" metaFont="cellTitle"/>
@@ -146,6 +151,53 @@
                 <outlet property="priceDifference" destination="Nub-ue-q6G" id="mme-Qw-ae2"/>
             </connections>
             <point key="canvasLocation" x="131" y="636"/>
+        </customView>
+        <customView id="kms-t1-LDh" userLabel="Third Detail View" customClass="DetailView" customModule="Barbar" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="140" height="87"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <subviews>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bVj-NY-1cG" userLabel="BTC / USD">
+                    <rect key="frame" x="20" y="63" width="100" height="16"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="BTC / USD" id="qUU-BP-vZm">
+                        <font key="font" metaFont="cellTitle"/>
+                        <color key="textColor" red="0.60000002379999995" green="0.60000002379999995" blue="0.60000002379999995" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uw5-hf-DhX">
+                    <rect key="frame" x="20" y="29" width="117" height="29"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="$573.05" id="OQ5-h5-Jr9">
+                        <font key="font" metaFont="systemMedium" size="24"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QBy-DF-3eu">
+                    <rect key="frame" x="18" y="8" width="104" height="16"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="+$37.15" id="iwE-fN-PQN">
+                        <font key="font" metaFont="cellTitle"/>
+                        <color key="textColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+            </subviews>
+            <constraints>
+                <constraint firstItem="bVj-NY-1cG" firstAttribute="bottom" secondItem="uw5-hf-DhX" secondAttribute="top" constant="-5" id="2RO-cv-Kv5"/>
+                <constraint firstAttribute="trailing" secondItem="uw5-hf-DhX" secondAttribute="trailing" constant="5" id="2dW-l0-HFV"/>
+                <constraint firstItem="uw5-hf-DhX" firstAttribute="leading" secondItem="kms-t1-LDh" secondAttribute="leading" constant="22" id="5kV-p2-gGA"/>
+                <constraint firstAttribute="trailing" secondItem="QBy-DF-3eu" secondAttribute="trailing" constant="20" id="5p3-Qr-6Ld"/>
+                <constraint firstItem="QBy-DF-3eu" firstAttribute="top" secondItem="uw5-hf-DhX" secondAttribute="bottom" constant="5" id="RCM-Kt-afA"/>
+                <constraint firstItem="bVj-NY-1cG" firstAttribute="leading" secondItem="kms-t1-LDh" secondAttribute="leading" constant="22" id="VBJ-gO-Gf8"/>
+                <constraint firstAttribute="trailing" secondItem="bVj-NY-1cG" secondAttribute="trailing" constant="22" id="iHS-h9-Y5V"/>
+                <constraint firstItem="uw5-hf-DhX" firstAttribute="centerY" secondItem="kms-t1-LDh" secondAttribute="centerY" id="tQQ-i4-lec"/>
+                <constraint firstItem="QBy-DF-3eu" firstAttribute="leading" secondItem="kms-t1-LDh" secondAttribute="leading" constant="20" id="xJr-s9-zoj"/>
+            </constraints>
+            <connections>
+                <outlet property="currencyPair" destination="bVj-NY-1cG" id="iOv-V6-kNF"/>
+                <outlet property="currentprice" destination="uw5-hf-DhX" id="kn8-Km-WfO"/>
+                <outlet property="priceDifference" destination="QBy-DF-3eu" id="7BK-6q-tsN"/>
+            </connections>
+            <point key="canvasLocation" x="132" y="793.5"/>
         </customView>
     </objects>
 </document>

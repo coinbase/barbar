@@ -15,21 +15,26 @@ class StatusMenuController: NSObject, PreferencesWindowDelegate {
     struct URL {
         static let btcUSD = "BTC-USD"
         static let ethUSD = "ETH-USD"
+        static let ltcUSD = "LTC-USD"
     }
     
     @IBOutlet weak var statusMenu: NSMenu!
     @IBOutlet weak var firstDetailView: DetailView!
     @IBOutlet weak var secondDetailView: DetailView!
+    @IBOutlet weak var thirdDetailView: DetailView!
 
     var firstPairViewMenuItem: NSMenuItem!
     var secondPairViewMenuItem: NSMenuItem!
+    var thirdPairViewMenuItem: NSMenuItem!
     var interval:TimeInterval!
     var timer: Timer!
     var firstPrice = ""
     var secondPrice = ""
+    var thirdPrice = ""
     var pairs: [Pair] = []
     var firstPairID: String!
     var secondPairID: String!
+    var thirdPairID: String!
     var chosenPairs: [Pair] = []
     var preferencesWindow: PreferencesWindow!
     var reachability: Reachability?
@@ -90,6 +95,13 @@ class StatusMenuController: NSObject, PreferencesWindowDelegate {
             defaults.set(secondPairID, forKey: UserDefaults.secondPair.rawValue)
         }
         
+        if let thirdPair = defaults.object(forKey: UserDefaults.thirdPair.rawValue) as? String {
+            thirdPairID = thirdPair
+        } else {
+            thirdPairID = URL.ltcUSD // Default
+            defaults.set(thirdPairID, forKey: UserDefaults.thirdPair.rawValue)
+        }
+        
         var startAtLogin = false
         if defaults.object(forKey: UserDefaults.launchFromStart.rawValue) == nil {
             startAtLogin = true // Default
@@ -119,6 +131,9 @@ class StatusMenuController: NSObject, PreferencesWindowDelegate {
         
         secondPairViewMenuItem = statusMenu.item(withTitle: "SecondPairView")
         secondPairViewMenuItem.view = secondDetailView
+        
+        thirdPairViewMenuItem = statusMenu.item(withTitle: "ThirdPairView")
+        thirdPairViewMenuItem.view = thirdDetailView
         
         preferencesWindow = PreferencesWindow()
         preferencesWindow.delegate = self
@@ -151,20 +166,24 @@ class StatusMenuController: NSObject, PreferencesWindowDelegate {
         DispatchQueue.main.async(execute: {
             self.firstDetailView.updateOffline()
             self.secondDetailView.updateOffline()
+            self.thirdDetailView.updateOffline()
         })
     }
     
     func updateTitle() {
         if (chosenPairs.count == 1 && chosenPairs[0].price != nil) ||
-            (chosenPairs.count == 2 && chosenPairs[0].price != nil && chosenPairs[1].price != nil) {
+            (chosenPairs.count == 2 && chosenPairs[0].price != nil && chosenPairs[1].price != nil) ||
+             (chosenPairs.count == 3 && chosenPairs[0].price != nil && chosenPairs[1].price != nil && chosenPairs[2].price != nil){
             
             DispatchQueue.main.async(execute: {
                 
                 let firstPair = self.chosenPairs[0]
                 let secondPair = self.chosenPairs[1]
+                let thirdPair = self.chosenPairs[2]
                 
                 var firstSymbol: String!
                 var secondSymbol: String!
+                var thirdSymbol: String!
                 
                 if let first = self.chosenPairs[0].price,
                     let quote = self.chosenPairs[0].quoteCurrency,
@@ -175,6 +194,8 @@ class StatusMenuController: NSObject, PreferencesWindowDelegate {
                         firstSymbol = "Ƀ"
                     } else if base == "ETH" {
                         firstSymbol = "Ξ"
+                    } else if base == "LTC" {
+                        firstSymbol = "Ł"
                     }
                 }
                 
@@ -187,6 +208,22 @@ class StatusMenuController: NSObject, PreferencesWindowDelegate {
                         secondSymbol = "Ƀ"
                     } else if base == "ETH" {
                         secondSymbol = "Ξ"
+                    } else if base == "LTC" {
+                        secondSymbol = "Ł"
+                    }
+                }
+                
+                if let third = self.chosenPairs[2].price,
+                    let quote = self.chosenPairs[2].quoteCurrency,
+                    let base = self.chosenPairs[2].baseCurrency {
+                    self.thirdPrice = CurrencyFormatter.sharedInstance.formatAmountString(third, currency: quote, options: nil)
+                    
+                    if base == "BTC" {
+                        thirdSymbol = "Ƀ"
+                    } else if base == "ETH" {
+                        thirdSymbol = "Ξ"
+                    } else if base == "LTC" {
+                        thirdSymbol = "Ł"
                     }
                 }
                 
@@ -206,21 +243,35 @@ class StatusMenuController: NSObject, PreferencesWindowDelegate {
                     secondFont = self.fontPosistive
                 }
                 
+                var thirdFont: [String : NSObject]!
+                if thirdPair.percent() < 0 {
+                    thirdFont = self.fontNegative
+                } else {
+                    thirdFont = self.fontPosistive
+                }
+                
                 let firstSymbolAtt =  NSAttributedString(string:firstSymbol, attributes: self.useColouredSymbols ? firstFont: self.font)
                 let firstPriceAtt = NSAttributedString(string:self.firstPrice, attributes: self.font)
 
                 let secondSymbolAtt =  NSAttributedString(string:secondSymbol, attributes: self.useColouredSymbols ? secondFont: self.font)
                 let secondPriceAtt = NSAttributedString(string:self.secondPrice, attributes: self.font)
+                
+                let thirdSymbolAtt =  NSAttributedString(string:thirdSymbol, attributes: self.useColouredSymbols ? thirdFont: self.font)
+                let thirdPriceAtt = NSAttributedString(string:self.thirdPrice, attributes: self.font)
 
                 mutableAttributedString.append(firstSymbolAtt)
                 mutableAttributedString.append(firstPriceAtt)
                 mutableAttributedString.append(NSAttributedString(string:" "))
                 mutableAttributedString.append(secondSymbolAtt)
                 mutableAttributedString.append(secondPriceAtt)
+                mutableAttributedString.append(NSAttributedString(string:" "))
+                mutableAttributedString.append(thirdSymbolAtt)
+                mutableAttributedString.append(thirdPriceAtt)
                 
                 self.statusItem.attributedTitle = mutableAttributedString
                 self.firstDetailView.update(firstPair, price: self.firstPrice, pairID: self.firstPairID)
                 self.secondDetailView.update(secondPair, price: self.secondPrice, pairID: self.secondPairID)
+                self.thirdDetailView.update(thirdPair, price: self.thirdPrice, pairID: self.thirdPairID)
                 self.preferencesWindow.exampleString = self.statusItem.attributedTitle
                 
                 self.showStatusItemImage(false)
@@ -267,6 +318,7 @@ class StatusMenuController: NSObject, PreferencesWindowDelegate {
             
             var firstPair: Pair!
             var secondPair: Pair!
+            var thirdPair: Pair!
             
             for pair in self.pairs {
                 
@@ -276,10 +328,15 @@ class StatusMenuController: NSObject, PreferencesWindowDelegate {
                 if pair.id == self.secondPairID {
                     secondPair = pair
                 }
+                if pair.id == self.thirdPairID {
+                    thirdPair = pair
+                }
+                
             }
             
             self.chosenPairs.append(firstPair)
             self.chosenPairs.append(secondPair)
+            self.chosenPairs.append(thirdPair)
             
             self.preferencesWindow.pairs = self.pairs
             self.update()
@@ -318,13 +375,16 @@ class StatusMenuController: NSObject, PreferencesWindowDelegate {
         updateTimer()
     }
     
-    func updatePair(_ isFirstPair:Bool, title: String) {
-        if isFirstPair == true {
+    func updatePair(_ pairNum:Int, title: String) {
+        if pairNum == 1 {
             defaults.set(title, forKey: UserDefaults.firstPair.rawValue)
             firstPairID = title
-        } else {
+        } else if pairNum == 2 {
             defaults.set(title, forKey: UserDefaults.secondPair.rawValue)
             secondPairID = title
+        } else if pairNum == 3 {
+            defaults.set(title, forKey: UserDefaults.thirdPair.rawValue)
+            thirdPairID = title
         }
         
         defaults.synchronize()

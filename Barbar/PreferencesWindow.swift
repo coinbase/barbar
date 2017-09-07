@@ -10,7 +10,7 @@ import Cocoa
 
 protocol PreferencesWindowDelegate {
     func updateInterval(_ interval: TimeInterval)
-    func updatePair(_ isFirstPair:Bool, title: String)
+    func updatePair(_ pairNum:Int, title: String)
     func preferencesDidUpdate()
     func toggleStartAtLogin(_ start:Bool)
     func updateColourSymbols(_ on:Bool)
@@ -30,6 +30,7 @@ enum UserDefaults: String {
     case interval = "interval"
     case firstPair = "firstPair"
     case secondPair = "secondPair"
+    case thirdPair = "thirdPair"
     case launchFromStart = "launchFromStart"
     case colorSymbols = "colorSymbols"
 }
@@ -38,6 +39,7 @@ class PreferencesWindow: NSWindowController, NSWindowDelegate, NSMenuDelegate {
 
     @IBOutlet weak var firstPair: NSPopUpButton!
     @IBOutlet weak var secondPair: NSPopUpButton!
+    @IBOutlet weak var thirdPair: NSPopUpButton!
     @IBOutlet weak var updateInterval: NSPopUpButton!
     @IBOutlet weak var colorSymbols: NSButton!
     @IBOutlet weak var exampleText: NSTextField!
@@ -55,11 +57,15 @@ class PreferencesWindow: NSWindowController, NSWindowDelegate, NSMenuDelegate {
     }
     
     @IBAction func secondPairUpdated(_ sender: NSPopUpButton) {
-        self.delegate!.updatePair(false, title:sender.titleOfSelectedItem!)
+        self.delegate!.updatePair(2, title:sender.titleOfSelectedItem!)
     }
     
     @IBAction func firstPairUpdated(_ sender: NSPopUpButton) {
-        self.delegate!.updatePair(true, title:sender.titleOfSelectedItem!)
+        self.delegate!.updatePair(1, title:sender.titleOfSelectedItem!)
+    }
+    
+    @IBAction func thirdPairUpdated(_ sender: NSPopUpButton) {
+        self.delegate!.updatePair(3, title:sender.titleOfSelectedItem!)
     }
     
     @IBAction func intervalUpdated(_ sender: NSPopUpButton) {
@@ -130,6 +136,7 @@ class PreferencesWindow: NSWindowController, NSWindowDelegate, NSMenuDelegate {
         let savedInterval = defaults.object(forKey: UserDefaults.interval.rawValue) as! TimeInterval
         let savedFirstPair = defaults.object(forKey: UserDefaults.firstPair.rawValue) as! String
         let savedSecondPair = defaults.object(forKey: UserDefaults.secondPair.rawValue) as! String
+        let savedThirdPair = defaults.object(forKey: UserDefaults.thirdPair.rawValue) as! String
         let savedLaunchFromStart = defaults.bool(forKey: UserDefaults.launchFromStart.rawValue)
         let savedColourSymbols = defaults.bool(forKey: UserDefaults.colorSymbols.rawValue)
         let savedSitePicker: String!
@@ -156,11 +163,13 @@ class PreferencesWindow: NSWindowController, NSWindowDelegate, NSMenuDelegate {
             if let displayName = pair.id! as String? {
                 firstPair.addItem(withTitle: displayName)
                 secondPair.addItem(withTitle: displayName)
+                thirdPair.addItem(withTitle: displayName)
             }
         }
         
         firstPair.selectItem(withTitle: savedFirstPair)
         secondPair.selectItem(withTitle: savedSecondPair)
+        thirdPair.selectItem(withTitle: savedThirdPair)
 
         // Example
         if exampleString != nil {
