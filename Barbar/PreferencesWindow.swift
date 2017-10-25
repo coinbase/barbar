@@ -133,7 +133,6 @@ class PreferencesWindow: NSWindowController, NSWindowDelegate, NSMenuDelegate {
         let savedFirstPair = defaults.object(forKey: UserDefaults.firstPair.rawValue) as! String
         let savedSecondPair = defaults.object(forKey: UserDefaults.secondPair.rawValue) as! String
         let savedLaunchFromStart = defaults.bool(forKey: UserDefaults.launchFromStart.rawValue)
-		let savedDarkMenuBar = defaults.bool(forKey: UserDefaults.darkMenuBar.rawValue)
         let savedColourSymbols = defaults.bool(forKey: UserDefaults.colorSymbols.rawValue)
         let savedSitePicker: String!
         
@@ -172,9 +171,6 @@ class PreferencesWindow: NSWindowController, NSWindowDelegate, NSMenuDelegate {
         
         // Start are launch
         startAtLaunch.state = savedLaunchFromStart ? 1 : 0
-		
-		// Dark menubar
-		// darkMenuBar.state = savedDarkMenuBar ? 1 : 0
         
         // Colour symbols
         colorSymbols.state = savedColourSymbols ? 1 : 0
