@@ -8,7 +8,7 @@
 
 import Cocoa
 import ServiceManagement
-
+import AppKit
 
 class StatusMenuController: NSObject, PreferencesWindowDelegate {
 
@@ -35,14 +35,15 @@ class StatusMenuController: NSObject, PreferencesWindowDelegate {
     var reachability: Reachability?
     var fontPosistive: [String : NSObject]!
     var fontNegative: [String : NSObject]!
-    var useColouredSymbols = true
-    
+	var font:  [String : NSObject]!
+	var useColouredSymbols = true
+	
     let statusItem = NSStatusBar.system().statusItem(withLength: NSVariableStatusItemLength)
     let defaults = Foundation.UserDefaults.standard
-    let font = [NSFontAttributeName: NSFont.systemFont(ofSize: 15)]
     let pairsURL = "https://api.gdax.com/products"
     let green = NSColor.init(red: 22/256, green: 206/255, blue: 0/256, alpha: 1)
     let red = NSColor.init(red: 255/256, green: 73/255, blue: 0/256, alpha: 1)
+	let white = NSColor.init(red: 255, green: 255, blue: 255, alpha: 1)
     
     override func awakeFromNib() {
         
@@ -65,7 +66,14 @@ class StatusMenuController: NSObject, PreferencesWindowDelegate {
 
     //MARK: SETUP
     func setup() {
-        
+		
+		// Check for dark menubar
+		if defaults.string(forKey: "AppleInterfaceStyle") == "Dark" {
+			font = [NSFontAttributeName: NSFont.systemFont(ofSize: 15), NSForegroundColorAttributeName: white]
+		} else {
+			font = [NSFontAttributeName: NSFont.menuBarFont(ofSize: 15)]
+		}
+		
         fontPosistive = [NSFontAttributeName: NSFont.systemFont(ofSize: 15), NSForegroundColorAttributeName: green]
         fontNegative = [NSFontAttributeName: NSFont.systemFont(ofSize: 15), NSForegroundColorAttributeName: red]
         
@@ -213,9 +221,11 @@ class StatusMenuController: NSObject, PreferencesWindowDelegate {
                 let secondPriceAtt = NSAttributedString(string:self.secondPrice, attributes: self.font)
 
                 mutableAttributedString.append(firstSymbolAtt)
+				mutableAttributedString.append(NSAttributedString(string:" "))
                 mutableAttributedString.append(firstPriceAtt)
                 mutableAttributedString.append(NSAttributedString(string:" "))
                 mutableAttributedString.append(secondSymbolAtt)
+				mutableAttributedString.append(NSAttributedString(string:" "))
                 mutableAttributedString.append(secondPriceAtt)
                 
                 self.statusItem.attributedTitle = mutableAttributedString

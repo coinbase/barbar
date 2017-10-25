@@ -27,6 +27,16 @@ class DetailView: NSView {
     required init?(coder: NSCoder) {
         super.init(coder: coder);
     }
+	
+	override func awakeFromNib() {
+		super.awakeFromNib()
+		
+		if Foundation.UserDefaults.standard.string(forKey: "AppleInterfaceStyle") == "Dark" {
+			self.currentprice.textColor = NSColor.init(red: 255, green: 255, blue: 255, alpha: 1)
+		} else {
+			self.currentprice.textColor = NSColor.init(red: 0, green: 0, blue: 0, alpha: 1)
+		}
+	}
     
     func update(_ pair: Pair?, price: String?, pairID: String?) {
         
