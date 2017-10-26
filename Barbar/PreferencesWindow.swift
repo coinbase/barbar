@@ -142,6 +142,11 @@ class PreferencesWindow: NSWindowController, NSWindowDelegate, NSMenuDelegate {
             savedSitePicker = sites[0].title
             defaults.set(savedSitePicker, forKey: siteUserDefault)
         }
+		
+		// Setting exampleText background depending on menubar style
+		if defaults.string(forKey: "AppleInterfaceStyle") == "Dark" {
+			exampleText.backgroundColor = NSColor.darkGray
+		}
         
         // Intervals
         updateInterval.menu?.delegate = self
