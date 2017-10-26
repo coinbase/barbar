@@ -171,8 +171,8 @@ class StatusMenuController: NSObject, PreferencesWindowDelegate {
                 let firstPair = self.chosenPairs[0]
                 let secondPair = self.chosenPairs[1]
                 
-                var firstSymbol: String!
-                var secondSymbol: String!
+                var firstSymbol: String! = ""
+                var secondSymbol: String! = ""
                 
                 if let first = self.chosenPairs[0].price,
                     let quote = self.chosenPairs[0].quoteCurrency,
@@ -183,7 +183,9 @@ class StatusMenuController: NSObject, PreferencesWindowDelegate {
                         firstSymbol = "Ƀ"
                     } else if base == "ETH" {
                         firstSymbol = "Ξ"
-                    }
+					} else if base == "LTC" {
+						secondSymbol = "L"
+					}
                 }
                 
                 if let second = self.chosenPairs[1].price,
@@ -195,7 +197,9 @@ class StatusMenuController: NSObject, PreferencesWindowDelegate {
                         secondSymbol = "Ƀ"
                     } else if base == "ETH" {
                         secondSymbol = "Ξ"
-                    }
+					} else if base == "LTC" {
+						secondSymbol = "L"
+					}
                 }
                 
                 let mutableAttributedString = NSMutableAttributedString()
