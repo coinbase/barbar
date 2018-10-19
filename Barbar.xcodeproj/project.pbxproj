@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4CFA1600217A7ACE00477AA2 /* iconDarkTemplate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CFA15FF217A7ACE00477AA2 /* iconDarkTemplate@2x.png */; };
 		CB0B17471CF55712001AB645 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB0B17461CF55712001AB645 /* AppDelegate.swift */; };
 		CB0B17491CF55712001AB645 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CB0B17481CF55712001AB645 /* Assets.xcassets */; };
 		CB0B174C1CF55712001AB645 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = CB0B174A1CF55712001AB645 /* MainMenu.xib */; };
@@ -42,6 +43,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		4CFA15FF217A7ACE00477AA2 /* iconDarkTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iconDarkTemplate@2x.png"; sourceTree = "<group>"; };
 		CB0B17431CF55712001AB645 /* Barbar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Barbar.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB0B17461CF55712001AB645 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CB0B17481CF55712001AB645 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -153,6 +155,7 @@
 				CB6CFE4B1D395D9D003C4719 /* eth@2x.png */,
 				CB6CFE4C1D395D9D003C4719 /* btc@2x.png */,
 				CB961C4C1D0B3FA4003D43B1 /* iconTemplate@2x.png */,
+				4CFA15FF217A7ACE00477AA2 /* iconDarkTemplate@2x.png */,
 			);
 			name = Assets;
 			sourceTree = "<group>";
@@ -254,6 +257,7 @@
 				CB0B17491CF55712001AB645 /* Assets.xcassets in Resources */,
 				CB6CFE4D1D395D9D003C4719 /* eth@2x.png in Resources */,
 				CB961C4D1D0B3FA4003D43B1 /* iconTemplate@2x.png in Resources */,
+				4CFA1600217A7ACE00477AA2 /* iconDarkTemplate@2x.png in Resources */,
 				CB6CFE4E1D395D9D003C4719 /* btc@2x.png in Resources */,
 				CB6000EA1CF8C8FE00D6B332 /* PreferencesWindow.xib in Resources */,
 				CB0B174C1CF55712001AB645 /* MainMenu.xib in Resources */,
