@@ -103,7 +103,7 @@ class CurrencyFormatter: NSObject {
         
         let tempOutput = formatter.string(from: NSNumber(value: amount))!
         let dotIndex = tempOutput.range(of: ".")?.lowerBound
-        let currentNumberOfFractionDigits = dotIndex == nil ? 0 : (tempOutput.substring(from: dotIndex!).characters.count - 1)
+        let currentNumberOfFractionDigits = dotIndex == nil ? 0 : (tempOutput[dotIndex!...].count - 1)
         
         if options.allowTruncation && (currentNumberOfFractionDigits > 2) {
             return formatSymbolAndPrefix(amount, currency: currency, numFormatter: truncatingFormatter, options: options)
@@ -127,7 +127,7 @@ class CurrencyFormatter: NSObject {
                 numFormatter.currencySymbol = currencyCode
                 output = numFormatter.string(from: NSNumber(value: amount))!
             } else {
-                if currency.characters.count > 0 {
+                if currency.count > 0 {
                     numFormatter.numberStyle = NumberFormatter.Style.decimal
                     output = "\(numFormatter.string(from: NSNumber(value: amount))!) \(currency)"
                 } else {
@@ -149,8 +149,8 @@ class CurrencyFormatter: NSObject {
         }
         if options.showNegativePrefix == false && amount < 0 {
             // Setting formatter.negativePrefix messes up currency symbols so just chop off first character
-            formattedOutput = formattedOutput
-                .substring(from: formattedOutput.characters.index(formattedOutput.startIndex, offsetBy: 1))
+            let index = formattedOutput.index(formattedOutput.startIndex, offsetBy: 1)
+            formattedOutput = String(formattedOutput[index...])
         }
         return formattedOutput
     }
