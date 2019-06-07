@@ -35,14 +35,18 @@ class StatusMenuController: NSObject, PreferencesWindowDelegate {
     var reachability: Reachability?
     var fontPosistive: [String : NSObject]!
     var fontNegative: [String : NSObject]!
-    var useColouredSymbols = true
+    
     
     let statusItem = NSStatusBar.system().statusItem(withLength: NSVariableStatusItemLength)
     let defaults = Foundation.UserDefaults.standard
-    let font = [NSFontAttributeName: NSFont.systemFont(ofSize: 15)]
-    let pairsURL = "https://api.gdax.com/products"
+    var font: [String : NSObject]!
+    var useColouredSymbols = true
+
+    let pairsURL = "https://api.pro.coinbase.com/products"
     let green = NSColor.init(red: 22/256, green: 206/255, blue: 0/256, alpha: 1)
     let red = NSColor.init(red: 255/256, green: 73/255, blue: 0/256, alpha: 1)
+    let white = NSColor.white
+
     
     override func awakeFromNib() {
         
@@ -65,6 +69,13 @@ class StatusMenuController: NSObject, PreferencesWindowDelegate {
 
     //MARK: SETUP
     func setup() {
+        
+        // Check for dark menu
+        if defaults.string(forKey: "AppleInterfaceStyle") == "Dark" {
+            font = [NSFontAttributeName: NSFont.systemFont(ofSize: 15), NSForegroundColorAttributeName: white]
+        } else {
+            font = [NSFontAttributeName: NSFont.menuBarFont(ofSize: 15)]
+        }
         
         fontPosistive = [NSFontAttributeName: NSFont.systemFont(ofSize: 15), NSForegroundColorAttributeName: green]
         fontNegative = [NSFontAttributeName: NSFont.systemFont(ofSize: 15), NSForegroundColorAttributeName: red]
@@ -141,9 +152,18 @@ class StatusMenuController: NSObject, PreferencesWindowDelegate {
     
     func showStatusItemImage(_ show: Bool) {
         if show == true {
-            statusItem.image = NSImage(named: "iconTemplate") // Just show while loading
+    
+            // Just show while loading
+            if Foundation.UserDefaults.standard.string(forKey: "AppleInterfaceStyle") == "Dark" {
+                statusItem.image = NSImage(named: "iconDarkTemplate")
+            } else {
+                statusItem.image = NSImage(named: "iconTemplate")
+            }
+            
         } else {
-            statusItem.image = nil
+            DispatchQueue.main.async {
+                self.statusItem.image = nil
+            }
         }
     }
     
@@ -163,19 +183,16 @@ class StatusMenuController: NSObject, PreferencesWindowDelegate {
                 let firstPair = self.chosenPairs[0]
                 let secondPair = self.chosenPairs[1]
                 
-                var firstSymbol: String!
-                var secondSymbol: String!
+                var firstSymbol = ""
+                var secondSymbol = ""
                 
                 if let first = self.chosenPairs[0].price,
                     let quote = self.chosenPairs[0].quoteCurrency,
                     let base = self.chosenPairs[0].baseCurrency {
                     self.firstPrice = CurrencyFormatter.sharedInstance.formatAmountString(first, currency: quote, options: nil)
                     
-                    if base == "BTC" {
-                        firstSymbol = "Ƀ"
-                    } else if base == "ETH" {
-                        firstSymbol = "Ξ"
-                    }
+                    firstSymbol = self.getCoinSymbol(base: base)
+                
                 }
                 
                 if let second = self.chosenPairs[1].price,
@@ -183,11 +200,7 @@ class StatusMenuController: NSObject, PreferencesWindowDelegate {
                     let base = self.chosenPairs[1].baseCurrency {
                     self.secondPrice = CurrencyFormatter.sharedInstance.formatAmountString(second, currency: quote, options: nil)
                     
-                    if base == "BTC" {
-                        secondSymbol = "Ƀ"
-                    } else if base == "ETH" {
-                        secondSymbol = "Ξ"
-                    }
+                    secondSymbol = self.getCoinSymbol(base: base)
                 }
                 
                 let mutableAttributedString = NSMutableAttributedString()
@@ -212,10 +225,13 @@ class StatusMenuController: NSObject, PreferencesWindowDelegate {
                 let secondSymbolAtt =  NSAttributedString(string:secondSymbol, attributes: self.useColouredSymbols ? secondFont: self.font)
                 let secondPriceAtt = NSAttributedString(string:self.secondPrice, attributes: self.font)
 
+                let space = NSAttributedString(string: "")
                 mutableAttributedString.append(firstSymbolAtt)
+                mutableAttributedString.append(space)
                 mutableAttributedString.append(firstPriceAtt)
-                mutableAttributedString.append(NSAttributedString(string:" "))
+                mutableAttributedString.append(space)
                 mutableAttributedString.append(secondSymbolAtt)
+                mutableAttributedString.append(space)
                 mutableAttributedString.append(secondPriceAtt)
                 
                 self.statusItem.attributedTitle = mutableAttributedString
@@ -226,6 +242,28 @@ class StatusMenuController: NSObject, PreferencesWindowDelegate {
                 self.showStatusItemImage(false)
             })
         }
+    }
+    
+    func getCoinSymbol(base: String) -> String {
+        var symbol = ""
+        
+        switch base {
+        case "BTC":
+            symbol = "Ƀ"
+        case "ETH":
+            symbol = "Ξ"
+        case "LTC":
+            symbol = "Ł"
+        case "BCH":
+            symbol = "฿"
+        case "ETC":
+            symbol = "Ć"
+        case "ZRX":
+            symbol = "x"
+        default:
+            return symbol // For future listed coins
+        }
+        return symbol
     }
     
     func fetchPairsPrice() {
@@ -358,7 +396,7 @@ class StatusMenuController: NSObject, PreferencesWindowDelegate {
     
     //MARK: Reachability
     func setupReachability(useHostName: Bool) {
-        let hostName = "gdax.com"
+        let hostName = "pro.coinbase.com"
 		
 		self.reachability = useHostName ? Reachability(hostname: hostName) : Reachability()
 		

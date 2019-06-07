@@ -13,3 +13,4 @@ OSX crypto-currency price ticker
 
 Download -> https://github.com/coinbase/barbar/raw/master/Barbar.zip
 
+
