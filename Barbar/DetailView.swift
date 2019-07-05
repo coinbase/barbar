@@ -98,17 +98,17 @@ class DetailView: NSView {
     override func mouseUp(with theEvent: NSEvent) {
         if let sitePicker = Foundation.UserDefaults.standard.object(forKey: "site") as? String {
             if sitePicker == "Coinbase" {
-                NSWorkspace.shared().open(URL(string: "https://www.coinbase.com/trade")!)
+                NSWorkspace.shared.open(URL(string: "https://www.coinbase.com/trade")!)
                 return
             }
         }
 		
 		guard let pairID = pairID else {
-			NSWorkspace.shared().open(URL(string: "http://api.pro.coinbase.com/trade")!)
+            NSWorkspace.shared.open(URL(string: "http://api.pro.coinbase.com/trade")!)
 			return
 		}
 		
-		NSWorkspace.shared().open(URL(string: "http://api.pro.coinbase.com/trade/\(pairID)")!)
+        NSWorkspace.shared.open(URL(string: "http://api.pro.coinbase.com/trade/\(pairID)")!)
 		
     }
     

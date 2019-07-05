@@ -16,7 +16,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         
         let mainAppIdentifier = "com.coinbase.bar.Barbar"
-        let running = NSWorkspace.shared().runningApplications
+        let running = NSWorkspace.shared.runningApplications
         var alreadyRunning = false
         
         for app in running {
@@ -43,14 +43,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             
             let newPath = NSString.path(withComponents: components)
             
-            NSWorkspace.shared().launchApplication(newPath)
+            NSWorkspace.shared.launchApplication(newPath)
         }
         else {
             self.terminate()
         }
     }
     
-    func terminate() {
+    @objc func terminate() {
         NSApp.terminate(nil)
     }
     

@@ -37,7 +37,7 @@ class StatusMenuController: NSObject, PreferencesWindowDelegate {
     var fontNegative: [String : NSObject]!
     
     
-    let statusItem = NSStatusBar.system().statusItem(withLength: NSVariableStatusItemLength)
+    let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
     let defaults = Foundation.UserDefaults.standard
     var font: [String : NSObject]!
     var useColouredSymbols = true
@@ -72,13 +72,13 @@ class StatusMenuController: NSObject, PreferencesWindowDelegate {
         
         // Check for dark menu
         if defaults.string(forKey: "AppleInterfaceStyle") == "Dark" {
-            font = [NSFontAttributeName: NSFont.systemFont(ofSize: 15), NSForegroundColorAttributeName: white]
+            font = [NSAttributedString.Key.font.rawValue: NSFont.systemFont(ofSize: 15), NSAttributedString.Key.foregroundColor.rawValue: white]
         } else {
-            font = [NSFontAttributeName: NSFont.menuBarFont(ofSize: 15)]
+            font = [NSAttributedString.Key.font.rawValue: NSFont.menuBarFont(ofSize: 15)]
         }
         
-        fontPosistive = [NSFontAttributeName: NSFont.systemFont(ofSize: 15), NSForegroundColorAttributeName: green]
-        fontNegative = [NSFontAttributeName: NSFont.systemFont(ofSize: 15), NSForegroundColorAttributeName: red]
+        fontPosistive = [NSAttributedString.Key.font.rawValue: NSFont.systemFont(ofSize: 15), NSAttributedString.Key.foregroundColor.rawValue: green]
+        fontNegative = [NSAttributedString.Key.font.rawValue: NSFont.systemFont(ofSize: 15), NSAttributedString.Key.foregroundColor.rawValue: red]
         
         if let interval = defaults.object(forKey: UserDefaults.interval.rawValue) as? TimeInterval {
             self.interval = interval
@@ -143,10 +143,10 @@ class StatusMenuController: NSObject, PreferencesWindowDelegate {
         }
         
         timer = Timer(timeInterval: interval, target: self, selector: #selector(update), userInfo: nil, repeats: true)
-        RunLoop.main.add(timer, forMode: RunLoopMode.commonModes)
+        RunLoop.main.add(timer, forMode: .common)
     }
     
-    func update() {
+    @objc func update() {
         fetchPairsPrice()
     }
     
@@ -205,25 +205,38 @@ class StatusMenuController: NSObject, PreferencesWindowDelegate {
                 
                 let mutableAttributedString = NSMutableAttributedString()
                 
-                var firstFont: [String : NSObject]!
+                var firstFont = [NSAttributedString.Key : Any]()
                 if firstPair.percent() < 0 {
-                    firstFont = self.fontNegative
+                    self.fontNegative.forEach {
+                        firstFont[NSAttributedString.Key(rawValue: $0)] = $1
+                    }
                 } else {
-                    firstFont = self.fontPosistive
+                    self.fontPosistive.forEach {
+                        firstFont[NSAttributedString.Key(rawValue: $0)] = $1
+                    }
                 }
                 
-                var secondFont: [String : NSObject]!
+                var secondFont = [NSAttributedString.Key:Any]()
                 if secondPair.percent() < 0 {
-                    secondFont = self.fontNegative
+                    self.fontNegative.forEach {
+                        secondFont[NSAttributedString.Key(rawValue: $0)] = $1
+                    }
                 } else {
-                    secondFont = self.fontPosistive
+                    self.fontPosistive.forEach {
+                        secondFont[NSAttributedString.Key(rawValue: $0)] = $1
+                    }
                 }
                 
-                let firstSymbolAtt =  NSAttributedString(string:firstSymbol, attributes: self.useColouredSymbols ? firstFont: self.font)
-                let firstPriceAtt = NSAttributedString(string:self.firstPrice, attributes: self.font)
+                var font = [NSAttributedString.Key:Any]()
+                self.font.forEach {
+                    font[NSAttributedString.Key(rawValue: $0)] = $1 as Any
+                }
+                
+                let firstSymbolAtt =  NSAttributedString(string:firstSymbol, attributes: self.useColouredSymbols ? firstFont : font)
+                let firstPriceAtt = NSAttributedString(string:self.firstPrice, attributes: font)
 
-                let secondSymbolAtt =  NSAttributedString(string:secondSymbol, attributes: self.useColouredSymbols ? secondFont: self.font)
-                let secondPriceAtt = NSAttributedString(string:self.secondPrice, attributes: self.font)
+                let secondSymbolAtt =  NSAttributedString(string:secondSymbol, attributes: self.useColouredSymbols ? secondFont: font)
+                let secondPriceAtt = NSAttributedString(string:self.secondPrice, attributes: font)
 
                 let space = NSAttributedString(string: "")
                 mutableAttributedString.append(firstSymbolAtt)
@@ -326,7 +339,7 @@ class StatusMenuController: NSObject, PreferencesWindowDelegate {
     }
     
     @IBAction func quitClicked(_ sender: NSMenuItem) {
-        NSApplication.shared().terminate(self)
+        NSApplication.shared.terminate(self)
     }
     
     func showPreference(_ sender: NSMenuItem) {
@@ -376,7 +389,7 @@ class StatusMenuController: NSObject, PreferencesWindowDelegate {
         SMLoginItemSetEnabled(launcherAppIdentifier as CFString, start)
         
         var startedAtLogin = false
-        for app in NSWorkspace.shared().runningApplications {
+        for app in NSWorkspace.shared.runningApplications {
             if app.bundleIdentifier == launcherAppIdentifier {
                 startedAtLogin = true
             }

@@ -46,9 +46,9 @@ class PreferencesWindow: NSWindowController, NSWindowDelegate, NSMenuDelegate {
     
     @IBAction func startAtLoginPressed(_ sender: NSButton) {
         var isOn:Bool = false
-        if sender.state == NSOffState {
+        if sender.state == .off {
             isOn = false
-        } else if sender.state == NSOnState {
+        } else if sender.state == .on {
             isOn = true
         }
         self.delegate!.toggleStartAtLogin(isOn)
@@ -79,9 +79,9 @@ class PreferencesWindow: NSWindowController, NSWindowDelegate, NSMenuDelegate {
     
     @IBAction func colourSymbolsUpdated(_ sender: NSButton) {
         var isOn:Bool = false
-        if sender.state == NSOffState {
+        if sender.state == .off {
             isOn = false
-        } else if sender.state == NSOnState {
+        } else if sender.state == .on {
             isOn = true
         }
         
@@ -121,7 +121,7 @@ class PreferencesWindow: NSWindowController, NSWindowDelegate, NSMenuDelegate {
 
         window?.center()
         window?.makeKeyAndOrderFront(nil)
-        window?.level = Int(CGWindowLevelForKey(.maximumWindow))
+        window?.level = .init(Int(CGWindowLevelForKey(.maximumWindow)))
         NSApp.activate(ignoringOtherApps: true)
     }
     
@@ -168,10 +168,10 @@ class PreferencesWindow: NSWindowController, NSWindowDelegate, NSMenuDelegate {
         }
         
         // Start are launch
-        startAtLaunch.state = savedLaunchFromStart ? 1 : 0
-        
+        startAtLaunch.state = savedLaunchFromStart ? .on : .off
+
         // Colour symbols
-        colorSymbols.state = savedColourSymbols ? 1 : 0
+        colorSymbols.state = savedColourSymbols ? .on : .off
         
         // Site picker
         
